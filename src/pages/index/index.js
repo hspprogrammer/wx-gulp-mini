@@ -3,27 +3,24 @@
 const app = getApp()
 
 Page({
-  data: {
-    motto: 'Hello World',
-    userInfo: {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    canIUseGetUserProfile: false,
-    canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
-  },
-  // 事件处理函数
-  bindViewTap() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  },
+  data: {},
   onLoad() {
     this.$$on('testEvent',this,(data)=>{
         console.log(data)
       })
-      console.log(this.$http.get())
+    this.httpTest()
   },
+  //发布订阅模拟
   onEventEmit(){
       this.$$emit('testEvent','这里是首页的button')
+  },
+  //请求模拟
+  async httpTest(){
+    const res = await this.$http({
+      baseUrl:'https://mock.apipost.cn/app/mock/project/b28f1d33-3071-48cf-b24f-83b2ad28537a/',
+      url:'aaa/bb/cc/api',
+      method:'GET'
+    })
+    console.info(`请求结果${JSON.stringify(res)}`)
   }
 })

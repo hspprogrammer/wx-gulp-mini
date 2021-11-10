@@ -1,5 +1,4 @@
 <!--index.wxml-->
 <view class="container">
   <van-button type="default" bind:click = "onEventEmit">点我测试发布订阅</van-button>
-  <van-icon name="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
 </view>

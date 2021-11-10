@@ -9,13 +9,12 @@ function WxHttp(params) {
     let context = this;
     pool.push(hash[id] = { id, params, isAbort: false, instance: context });
 
-    function require(){
-        if(count >= max || !pool.length){
-            return false
-        }
+    function request(){
+        if (count >= max || !pool.length) return false;
         let obj = pool.shift() || {};
-        let { id, params, hasAbort } = obj;
-        if (!params || !params.url || hasAbort) return request();
+        let { id, params, isAbort } = obj;
+        if (!params || !params.url || isAbort) return request();
+       
         count ++;
 
         return new Promise(async (resolve,reject)=>{
@@ -23,14 +22,20 @@ function WxHttp(params) {
                 console.error('url为必填值')
                 reject('url为必填值')
             }
-            params.url = 'HTTP_BASE_URL'+params.url
-            params.method = params.method || 'GET'
-            params.data = params.data || {}
+            if (params.timeout) {
+                obj.timeout = setTimeout(() => { obj.request.abort(); }, params.timeout);
+            }
 
             obj.request = wx.request({
                 ...params,
+                url:`${params.baseUrl || 'HTTP_BASE_URL'}`+params.url,
+                method:params.method || 'GET',
+                data:params.data || {},
                 success (res) {
-                  resolve(res.data);
+                    if(res.statusCode == 200){
+                        resolve(res.data);
+                    }
+                  
                 },
                 fail (err) {
                     // wx.showToast({
@@ -38,20 +43,36 @@ function WxHttp(params) {
                     //     icon: 'none'
                     // });
                     // wx.hideLoading();
-                    // reject(err);
+                    reject(err);
                 },
-              })
+                complete () {
+                    obj.timeout && clearTimeout(obj.timeout);
+                    delete hash[id];
+                    count--;
+                    request();
+                }
+              });
+            
         })
     }
 
-    return require
+    this.$abort = function () {
+        let obj = hash[id];
+        if (!obj) return false;
+        if (obj.request) {
+            obj.request.abort();
+        } else {
+            obj.hasAbort = true;
+            obj.params.fail && obj.params.fail();
+            obj.params.complete && obj.params.complete();
+        }
+    };
+
+    return request()
 }
 
-function abortHttp(){
 
+export {
+    WxHttp
 }
 
-module.exports = {
-    WxHttp,
-    abortHttp
-}
