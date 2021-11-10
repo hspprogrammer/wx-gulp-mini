@@ -1,0 +1,2 @@
+import './rewriteWx';
+import './http'
