@@ -1,18 +1,25 @@
 // index.js
+
+const { WxHttp } = require("../../utils/core/http")
+
 // 获取应用实例
 const app = getApp()
 
 Page({
+  path:"pages/index/index",
   data: {},
   onLoad() {
     this.$$on('testEvent',this,(data)=>{
         console.log(data)
       })
-    this.httpTest()
+    // this.$preload('pages/logs/logs')
+    // this.httpTest()
+   
   },
   //发布订阅模拟
   onEventEmit(){
-      this.$$emit('testEvent','这里是首页的button')
+      // this.$$emit('testEvent','这里是首页的button')
+      this.$route('pages/logs/logs',{},true)
   },
   //请求模拟
   async httpTest(){
