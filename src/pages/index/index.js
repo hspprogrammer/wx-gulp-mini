@@ -19,7 +19,10 @@ Page({
   //发布订阅模拟
   onEventEmit(){
       // this.$$emit('testEvent','这里是首页的button')
-      this.$route('pages/logs/logs',{},true)
+      // this.$route('pages/logs/logs',{},true)
+      wx.navigateTo({
+        url:"/pageB/index/index"
+      })
   },
   //请求模拟
   async httpTest(){

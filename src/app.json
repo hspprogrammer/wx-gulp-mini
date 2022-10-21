@@ -3,6 +3,14 @@
       "pages/index/index",
       "pages/logs/logs"
     ],
+    "subpackages":[
+      {
+        "root": "pageB",
+        "pages": [
+          "index/index"
+        ]
+      }
+    ],
     "window":{
       "backgroundTextStyle":"light",
       "navigationBarBackgroundColor": "#fff",
